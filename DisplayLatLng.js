@@ -9,11 +9,10 @@ import {
   TouchableOpacity,
   TouchableHighlight,
   Image,
-  Modal,
-  Picker
+  Modal
 } from 'react-native';
 
-const Item = Picker.Item;
+import ImagePicker from 'react-native-image-picker';
 
 import Gallery from 'react-native-gallery';
 import MapView from 'react-native-maps';
@@ -37,6 +36,7 @@ const upvoteClickedIcon = (<Icon name="thumb-up" size={width/16} color="yellow" 
 const downvoteIcon = (<Icon name="thumb-down" size={width/16} color="grey" />);
 const downvoteClickIcon = (<Icon name="thumb-down" size={width/16} color="yellow" />);
 const closeIcon = (<Icon name="close" size={width/16} color="black" />);
+const addImgIcon = (<Icon name="camera-alt" size={width/12} color="black" />);
 
 const ASPECT_RATIO = width / height;
 const LATITUDE = 37.78825;
@@ -54,6 +54,20 @@ import ModalDropdown from 'react-native-modal-dropdown';
 
 
 const URI = 'http://cdn.lolwot.com/wp-content/uploads/2015/07/20-pictures-of-animals-in-hats-to-brighten-up-your-day-1.jpg';
+//let PicBed = 'http://up.imgapi.com?aid=1&from=web&httptype=2&deadline='
+const PicBed = 'http://up.qiniu.com';
+
+function generateUUID(){
+    let d = new Date().getTime();
+    let uuid = 
+    'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function(c) {
+        var r = (d + Math.random()*16)%16 | 0;
+        d = Math.floor(d/16);
+        return (c=='x' ? r : (r&0x3|0x8)).toString(16);
+    });
+    return uuid;
+}
+
 class DisplayLatLng extends React.Component {
   constructor(props) {
     super(props);
@@ -61,6 +75,7 @@ class DisplayLatLng extends React.Component {
     this.state = {
       post: '',
       selectedType: {label: '留言类型', value: null},
+      selectedPic: '',
       modalPic: '',
       openForm: false,
       notice: [],
@@ -77,6 +92,22 @@ class DisplayLatLng extends React.Component {
 //    setInterval(()=>this.getLocation(), 5000);
   }
 
+  showSelectedPic() {
+      if (this.state.selectedPic === '') return <View />
+      return (
+          <CardImage>
+	          <TouchableHighlight underlayColor='transparent' onPress={()=>{this.setState({modalPic: this.state.selectedPic})}}>
+              <Image
+               style={{
+               resizeMode: "contain",
+               width: width * 0.6,
+               height: height * 0.1,
+               }}
+               source={{ uri: this.state.selectedPic }} />
+               </TouchableHighlight>
+        </CardImage>
+        )
+  }
   notice(msg) {
       this.state.notice.push(msg); 
       this.setState({});
@@ -185,8 +216,8 @@ class DisplayLatLng extends React.Component {
              </ModalDropdown>
                  </View>
 
-      <TextInput label={'Name'} multiline = {true}  maxLength = {40} 
-       style={{width: width * 0.94, height: height * 0.2, top: height* 0.01, left: width * 0.01, borderColor: 'gray', 
+      <TextInput label={'Name'} multiline = {true}  maxLength = {100} 
+       style={{width: width * 0.94, height: height * 0.15, top: height* 0.01, left: width * 0.01, borderColor: 'gray', 
     shadowColor: "#000000",
     shadowOpacity: 0.8,
     shadowRadius: 3,
@@ -195,12 +226,50 @@ class DisplayLatLng extends React.Component {
       width: 0},
     backgroundColor: '#F8F8FF',
           borderRadius: 5}}
-          placeholder='留言最多40字'
+          placeholder='留言最多100字'
           onChangeText={(post) => this.setState({post})}
-          defaultValue={this.state.post}
+          //defaultValue={this.state.post}
+          defaultValue='啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊'
               fontSize={width*0.04}
          />
-             <View style={{alignItems: 'center', marginTop:20, marginLeft: 7, marginRight: 7}} >
+          <View padding={height* 0.03} flexDirection='row'>
+	      <TouchableHighlight 
+           underlayColor='transparent' 
+           onPress={()=>{
+               var options = {
+                   quality: 1.0,
+                   maxWidth: 500,
+                   maxHeight: 500,
+                   storageOptions: {
+                       skipBackup: true }
+               };
+               ImagePicker.launchImageLibrary(options, (response)  => {
+
+                   let body = new FormData();
+                   let uuid = generateUUID();
+                   this.setState({selectedPic: response.uri});
+                   //body.append('file', 
+                   //   {uri: response.uri, 
+                   //    filename: response.fileName,
+                   //    "Content-Type": 'image/jpg'});
+                   //body.append('key', uuid+response.fileName);
+                   //body.append('token', 'Y1I4Q1lhx-drrAGCSD2CGVIyyyprtKalKl1BJwiO:mLnWcFl_oG3xZWpQJy7PqUsIHqw=:eyJzY29wZSI6Im1ldGFtYXAiLCJkZWFkbGluZSI6MTQ4NjM5MzAzNn0=');
+                   //fetch(PicBed,
+                   //      {method: 'POST',
+                   //       headers:{'Accept': 'application/json',
+                   //                'Content-Type': 'multipart/form-data; boundary=----ThisIsUmaBoundaryWebKitFormBoundaryTC1z0EghC4FyYzRg'+uuid}, 
+                   //       body: body})
+                   //.then((res) => {console.log(res.status);res.json()})
+                   //.then((res) => { console.log("response" +JSON.stringify(res)); })
+                   //.catch((e) => console.log(e)).done()
+               })
+           }} >
+              {addImgIcon}
+          </TouchableHighlight>
+              {this.showSelectedPic()}
+              {this.showModal()}
+             </View>
+             <View style={{alignItems: 'center', marginLeft: 7, marginRight: 7}} >
              < SubmitBtn />
              </View>
              </ScrollView>
@@ -298,20 +367,20 @@ class DisplayLatLng extends React.Component {
                width: width * 0.96,
                height: height * 0.25,
                }}
-      source={{ uri: URI }} />
+               source={{ uri: URI }} />
                </TouchableHighlight>
-              <View style={{flexDirection: 'row', justifyContent: 'space-around', paddingTop: 5}}>
+              <View style={{flex:1, flexDirection: 'row', justifyContent: 'space-around', paddingTop: 5}}>
                 <View style={{flexDirection: 'row'}}>
 	              <TouchableHighlight underlayColor='transparent' onPress={()=>{this.notice('upvote pressed'); console.log('pressed')}}>
                     {upvoteIcon}
                   </TouchableHighlight>
-                  <Text style={{backgroundColor:'transparent', color:"#FA8072", padding: width*0.01}}>200</Text>
+                  <Text style={{backgroundColor:'transparent', color:"#FA8072", padding: width*0.01}}>200    </Text>
                 </View>
                 <View style={{flexDirection: 'row'}}>
 	              <TouchableHighlight underlayColor='transparent' onPress={()=>console.log('pressed')}>
                   {downvoteIcon}
                   </TouchableHighlight>
-                  <Text style={{backgroundColor:'transparent', padding: width*0.01, color:"#008B00"}}>200</Text>
+                  <Text style={{backgroundColor:'transparent', padding: width*0.01, color:"#008B00"}}>200    </Text>
                 </View>
 	            <TouchableHighlight underlayColor='transparent' onPress={()=>console.log('pressed')}>
                   <Text style={{color: '#EE3B3B'}}>举报</Text>
