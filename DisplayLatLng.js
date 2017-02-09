@@ -31,12 +31,13 @@ import {
 const { width, height } = Dimensions.get('window');
 const refreshIcon = (<Icon name="autorenew" size={width/12} color="black" />);
 const addIcon = (<Icon name="create" size={width/12} color="white" />);
-const upvoteIcon = (<Icon name="thumb-up" size={width/16} color="grey" />);
-const upvoteClickedIcon = (<Icon name="thumb-up" size={width/16} color="yellow" />);
-const downvoteIcon = (<Icon name="thumb-down" size={width/16} color="grey" />);
-const downvoteClickIcon = (<Icon name="thumb-down" size={width/16} color="yellow" />);
-const closeIcon = (<Icon name="close" size={width/16} color="black" />);
-const addImgIcon = (<Icon name="camera-alt" size={width/12} color="black" />);
+const person = (<Icon name="person" size={width/18} color="white" />);
+const thumbup = (<Icon name="thumb-up" size={width/16} color="white" />);
+const downvoteIcon = (<Icon name="exposure-neg-1" size={width/16} color="white" />);
+const thumbdown = (<Icon name="thumb-down" size={width/16} color="white" />);
+const deleteIcon = (<Icon name="delete-forever" size={width/14} color="white" />);
+const closeIcon = (<Icon name="keyboard-arrow-left" size={width/16} color="white" />);
+const addImgIcon = (<Icon name="camera-alt" size={width/18} color="white" />);
 
 const ASPECT_RATIO = width / height;
 const LATITUDE = 37.78825;
@@ -101,13 +102,14 @@ class DisplayLatLng extends React.Component {
                style={{
                resizeMode: "contain",
                width: width * 0.6,
-               height: height * 0.1,
+               height: height * 0.14,
                }}
                source={{ uri: this.state.selectedPic }} />
                </TouchableHighlight>
         </CardImage>
         )
   }
+
   notice(msg) {
       this.state.notice.push(msg); 
       this.setState({});
@@ -115,7 +117,7 @@ class DisplayLatLng extends React.Component {
 
   getPostTypeIcon() {
       if (this.state.selectedType.value === null)
-          return <View style={[styles.postTypeIcon, {backgroundColor: 'grey'}]} />
+          return <View style={[styles.postTypeIcon, {backgroundColor: '#D7CCC8'}]} />
       let icon;
       if (this.state.selectedType.value === PUBTYPE_GOODNEWS)
           icon = require('./images/doller-purple.png');
@@ -155,7 +157,7 @@ class DisplayLatLng extends React.Component {
       if (rowID === '2') icon = require('./images/question-mark-purple.png');
       return (<TouchableHighlight underlayColor='white'>
                 <View style={[styles.dropdown_2_row, 
-                             {backgroundColor: 'black',
+                             {backgroundColor: '#424242',
                               borderRadius: 3
                              }]}>
                   <Image style={styles.dropdown_2_image}
@@ -178,11 +180,6 @@ class DisplayLatLng extends React.Component {
   }
   
   showForm() {
-    let SubmitBtn = MKButton.coloredButton().withText('留言')
-              .withOnPress(() => 
-                      {this.notice('留言提交成功 : )');
-                       this.setState({openForm: false})})
-              .build();
     if (!this.state.openForm) return <View />;
     return (
         <Modal
@@ -190,22 +187,21 @@ class DisplayLatLng extends React.Component {
          transparent={true}
          visible={true}
          >
-        <View style={{width: width * 0.96, height: height * 0.5, marginBottom: height*0.4, marginTop: height * 0.03, borderRadius: 5,
-            left: width * 0.02, 
+         {this.topbar()}
+         <View style={{width: width, height: height * 0.6}} >
+        <View style={{width: width * 0.86, height: height * 0.42, marginTop: height * 0.03, 
+            left: width * 0.067, 
     shadowColor: "#000000",
     shadowOpacity: 0.8,
     shadowRadius: 3,
     shadowOffset: {
       height: 2,
-      width: 0},
-    backgroundColor: '#E8E8E8',
+      width: 1},
+    backgroundColor: '#EEEEEE',
         }}>
         <ScrollView>
-	      <TouchableHighlight underlayColor='transparent' onPress={()=>{this.setState({openForm: false})}}>
-              {closeIcon}
-          </TouchableHighlight>
         <View flexDirection='row' padding={width * 0.02}  >
-        <Text style={{fontSize: width * 0.04, padding: width * 0.04}}>留言类型:</Text>
+        <Text style={{fontSize: width * 0.04, padding: width * 0.02}}>选择留言类型:</Text>
         <ModalDropdown 
          dropdownStyle={styles.dropdown_2_dropdown}
          options={items}
@@ -217,7 +213,7 @@ class DisplayLatLng extends React.Component {
                  </View>
 
       <TextInput label={'Name'} multiline = {true}  maxLength = {100} 
-       style={{width: width * 0.94, height: height * 0.15, top: height* 0.01, left: width * 0.01, borderColor: 'gray', 
+       style={{width: width * 0.84, height: height * 0.15, top: height* 0.03, left: width * 0.01, borderColor: 'gray', 
     shadowColor: "#000000",
     shadowOpacity: 0.8,
     shadowRadius: 3,
@@ -225,19 +221,22 @@ class DisplayLatLng extends React.Component {
       height: 2,
       width: 0},
     backgroundColor: '#F8F8FF',
-          borderRadius: 5}}
+          }}
           placeholder='留言最多100字'
           onChangeText={(post) => this.setState({post})}
           //defaultValue={this.state.post}
-          defaultValue='啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊'
+          defaultValue='啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊'
               fontSize={width*0.04}
          />
-          <View padding={height* 0.03} flexDirection='row'>
+          <View padding={height* 0.05} flexDirection='row' justifyContent='flex-end'>
+              {this.showSelectedPic()}
+              {this.showModal()}
 	      <TouchableHighlight 
+           style={styles.cameraButton}
            underlayColor='transparent' 
            onPress={()=>{
                var options = {
-                   quality: 1.0,
+                   quality: 0.5,
                    maxWidth: 500,
                    maxHeight: 500,
                    storageOptions: {
@@ -266,13 +265,21 @@ class DisplayLatLng extends React.Component {
            }} >
               {addImgIcon}
           </TouchableHighlight>
-              {this.showSelectedPic()}
-              {this.showModal()}
-             </View>
-             <View style={{alignItems: 'center', marginLeft: 7, marginRight: 7}} >
-             < SubmitBtn />
              </View>
              </ScrollView>
+          </View>
+        {this.bottombar()}
+          <View style={{
+      position: 'absolute',
+      left: width * 0.4,
+      top: height * 0.453,}} >
+           <TouchableHighlight
+           underlayColor='transparent' 
+           onPress={()=>{this.notice('留言提交成功 : )');
+                       this.setState({openForm: false})}} >
+          <Text style={{ textAlign: 'center', color:'white', fontSize: width * 0.05}}>地上留言</Text>
+             </TouchableHighlight>
+             </View>
           </View>
          </Modal>
     )
@@ -281,6 +288,7 @@ class DisplayLatLng extends React.Component {
   showModal() {
     let pic = this.state.modalPic;
     if (pic === '')  return <View />;
+    console.log('render modal');
     return (
         <Modal
          animationType={"none"}
@@ -334,66 +342,112 @@ class DisplayLatLng extends React.Component {
       else return <View></View>
   }
 
-  renderCard() {
-      if (!this.state.postOpen) return <View></View>
+  topbar() {
       return (
-        <Card styles={{card: {width: width * 0.96, marginBottom: height*0.4, marginTop: height * 0.03, borderRadius: 5,
+        <View style={{backgroundColor: '#EF5350', height: height * 0.035,
+            left: width * 0.075,
+            top: height * 0.03,
+            width: width * 0.84,
     shadowColor: "#000000",
     shadowOpacity: 0.8,
     shadowRadius: 3,
     shadowOffset: {
       height: 2,
-      width: 0},
-    backgroundColor: '#E8E8E8',
-        }}}>
-          <CardContent>
-	      <TouchableHighlight underlayColor='transparent' onPress={()=>{this.setState({postOpen: false})}}>
+      width: 1}}}>
+	      <TouchableHighlight underlayColor='transparent' padding={width*0.01} onPress={()=>{this.setState({postOpen: false})}}>
               {closeIcon}
           </TouchableHighlight>
-          <View style={{height: 2, backgroundColor: 'grey', }} />
-              <Text style={{fontSize: width * 0.035, color:'grey'}}>2017.10.1:</Text>
-              <Text style={{fontSize: width * 0.04}}>
-                  Lorem ipsum dolor sit amet, consectetur adipiscing elit.
-                  Mauris sagittis pellentesque lacus eleifend lacinia...
-                  Lorem ipsum dolor sit amet, consectetur adipiscing elit.
-                  Mauris sagittis pellentesque lacus eleifend lacinia...
+              </View>
+     );
+  }
+
+  bottombar() {
+      return (
+        <View style={{backgroundColor: '#3F51B5', height: height * 0.05,
+            left: width * 0.055,
+            top: height * 0.445,
+            width: width * 0.88,
+      position: 'absolute',
+    shadowColor: "#000000",
+    shadowOpacity: 0.8,
+    shadowRadius: 3,
+    shadowOffset: {
+      height: 2,
+      width: 1}}} />
+     );
+  }
+
+  renderCard() {
+      if (!this.state.postOpen) return <View />
+      return (
+        <Modal
+         animationType={"none"}
+         transparent={true}
+         visible={true} >
+         <View style={{width: width, height: height}} >
+         {this.topbar()}
+        <View style={{width: width * 0.86, height: height * 0.38,  marginTop: height * 0.03, 
+            left: width* 0.067,
+    shadowColor: "#000000",
+    shadowOpacity: 0.8,
+    shadowRadius: 3,
+    shadowOffset: {
+      height: 2,
+      width: 1},
+    backgroundColor: '#EEEEEE',
+        }}>
+        <ScrollView>
+              <Text style={{paddingHorizontal: width * 0.01, fontSize: width * 0.03, color:'grey'}}>有位小伙伴于2017.10.1在此处写道:</Text>
+              <Text style={{padding: width * 0.02, fontSize: width * 0.04}}>
+啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊
               </Text>
-          </CardContent>
-          <CardImage>
 	          <TouchableHighlight underlayColor='transparent' onPress={()=>{this.setState({modalPic: URI})}}>
               <Image
                style={{
                resizeMode: "contain",
-               width: width * 0.96,
-               height: height * 0.25,
+               width: width * 0.9,
+               height: height * 0.22,
                }}
                source={{ uri: URI }} />
                </TouchableHighlight>
-              <View style={{flex:1, flexDirection: 'row', justifyContent: 'space-around', paddingTop: 5}}>
-                <View style={{flexDirection: 'row'}}>
-	              <TouchableHighlight underlayColor='transparent' onPress={()=>{this.notice('upvote pressed'); console.log('pressed')}}>
-                    {upvoteIcon}
-                  </TouchableHighlight>
-                  <Text style={{backgroundColor:'transparent', color:"#FA8072", padding: width*0.01}}>200    </Text>
-                </View>
-                <View style={{flexDirection: 'row'}}>
-	              <TouchableHighlight underlayColor='transparent' onPress={()=>console.log('pressed')}>
-                  {downvoteIcon}
-                  </TouchableHighlight>
-                  <Text style={{backgroundColor:'transparent', padding: width*0.01, color:"#008B00"}}>200    </Text>
-                </View>
-	            <TouchableHighlight underlayColor='transparent' onPress={()=>console.log('pressed')}>
-                  <Text style={{color: '#EE3B3B'}}>举报</Text>
-                </TouchableHighlight>
-              </View>
-          </CardImage>
-        </Card>
+               </ScrollView>
+        </View>
+        {this.bottombar()}
+               {this.renderButtons()}
+              {this.showModal()}
+               </View>
+        </Modal>
       )
+  }
+
+  renderButtons() {
+      if(!this.state.postOpen) return <View />;
+      return (<View style={{width: width*0.84, flex:1, flexDirection: 'row', justifyContent: 'space-around', 
+      position: 'absolute',
+      top: height * 0.45,
+      left: width * 0.07
+      }}>
+         <View flexDirection='row'>
+	             <TouchableHighlight underlayColor='transparent' onPress={()=>{this.notice('upvote pressed'); console.log('pressed')}}>
+           {thumbup}
+                  </TouchableHighlight>
+           <Text style={{backgroundColor:'transparent', color:"white", fontSize: width * 0.04, padding: width*0.01}}>200</Text>
+         </View>
+	       <TouchableHighlight onPress={()=>{this.notice('upvote pressed'); console.log('pressed')}}>
+           {deleteIcon}
+                  </TouchableHighlight>
+         <View flexDirection='row'>
+            <Text style={{backgroundColor:'transparent', padding: width*0.01, color:"white"}}>-200</Text>
+	             <TouchableHighlight onPress={()=>{this.notice('upvote pressed'); console.log('pressed')}}>
+            {thumbdown}
+                  </TouchableHighlight>
+         </View>
+              </View>
+      );
   }
 
   render() {
       console.log('render:');
-      console.log(this.state.selectedType);
     return (
       <View style={styles.container}>
         <MapView
@@ -439,20 +493,23 @@ class DisplayLatLng extends React.Component {
 	<View >
 	<TouchableHighlight style={styles.refreshButton}
 	 underlayColor='lightgrey' onPress={()=>{this.setState({loading: !this.state.loading});console.log('pressed')}}>
-	  <View>{refreshIcon}</View>
+	  {refreshIcon}
 	</TouchableHighlight >
 	<TouchableHighlight style={styles.addButton}
 	 underlayColor='#ff7043' onPress={()=>{
              this.setState({openForm: !this.state.openForm});
              }} >
-	  <View>{addIcon}</View>
+	  {addIcon}
 	</TouchableHighlight>
+	<TouchableHighlight style={styles.personButton}
+	 underlayColor='lightgrey' onPress={()=>{this.setState({loading: !this.state.loading});console.log('pressed')}}>
+	  {person}
+	</TouchableHighlight >
         </View>
         { this.renderCard() }
         { this.showNotice() }
         { this.showForm() }
         { this.renderSpinner() }
-        { this.showModal() }
       </View>
     );
   }
@@ -537,9 +594,9 @@ const styles = StyleSheet.create({
       height: 2,
       width: 0}
   },
-  searchButton: {
-    backgroundColor: 'lightblue',
-    borderColor: 'lightblue',
+  personButton: {
+    backgroundColor: 'black',
+    borderColor: 'black',
     borderWidth: 1,
     height: width/13,
     width: width/13,
@@ -547,8 +604,8 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center',
     position: 'absolute',
-    bottom: height / 1.32,
-    right: width / 24,
+    bottom: height / 1.15,
+    right: width / 25,
     shadowColor: "#000000",
     shadowOpacity: 0.8,
     shadowRadius: 2,
@@ -594,6 +651,23 @@ const styles = StyleSheet.create({
       height: 1,
       width: 0}
   },
+  cameraButton: {
+    backgroundColor: '#e4a800',
+    borderColor: '#e4a800',
+    borderWidth: 1,
+    height: width/12,
+    width: width/12,
+    borderRadius: 50,
+    alignItems: 'center',
+    justifyContent: 'center',
+    shadowColor: "#000000",
+    shadowOpacity: 0.8,
+    shadowRadius: 2,
+    shadowOffset: {
+      height: 1,
+      width: 0}
+  },
+
   refreshButton: {
     backgroundColor: 'white',
     borderColor: 'white',
@@ -614,12 +688,44 @@ const styles = StyleSheet.create({
       width: 0}
   },
 
+  upButton: {
+    backgroundColor: '#D32F2F',
+    borderColor: '#D32F2F',
+    borderWidth: 1,
+    height: width/8,
+    width: width/8,
+    borderRadius: 50,
+    alignItems: 'center',
+    justifyContent: 'center',
+    shadowColor: "#000000",
+    shadowOpacity: 0.8,
+    shadowRadius: 2,
+    shadowOffset: {
+      height: 2,
+      width: 0}
+  },
+  downButton: {
+    backgroundColor: '#607D8B',
+    borderColor: '#607D8B',
+    borderWidth: 1,
+    height: width/8,
+    width: width/8,
+    borderRadius: 50,
+    alignItems: 'center',
+    justifyContent: 'center',
+    shadowColor: "#000000",
+    shadowOpacity: 0.8,
+    shadowRadius: 2,
+    shadowOffset: {
+      height: 2,
+      width: 0}
+  },
   postTypeIcon: {
     backgroundColor: 'white',
     borderColor: 'white',
     borderWidth: 1,
-    height: width/8,
-    width: width/8,
+    height: width/9,
+    width: width/9,
     borderRadius: 50,
     alignItems: 'center',
     justifyContent: 'center',
@@ -654,8 +760,8 @@ const styles = StyleSheet.create({
     },
     dropdown_2_dropdown: {
         width: width * 0.6,
-        height: height * 0.185,
-        backgroundColor: 'black',
+        height: height * 0.21,
+        backgroundColor: '#424242',
         borderColor: 'grey',
         borderRadius: width * 0.01,
     shadowColor: "#000000",
@@ -671,9 +777,9 @@ const styles = StyleSheet.create({
         alignItems: 'center',
     },
     dropdown_2_image: {
-        marginLeft: 3,
-        width: 30,
-        height: 30,
+        padding: width*0.02,
+        width: width* 0.035,
+        height: height * 0.035,
     },
     dropdown_row_text: {
         fontSize: width * 0.04,
