@@ -17,16 +17,8 @@ import ImagePicker from 'react-native-image-picker';
 import Gallery from 'react-native-gallery';
 import MapView from 'react-native-maps';
 import FontAwesomeIcon from 'react-native-vector-icons/FontAwesome';
-import TextField from 'react-native-md-textinput';
 import {MKButton, MKSpinner, MKColor, MKIconToggle} from 'react-native-material-kit';
 import Icon from 'react-native-vector-icons/MaterialIcons';
-import {
-    Card,
-    CardImage,
-    CardTitle,
-    CardContent,
-    CardAction
-} from 'react-native-card-view';
 
 const { width, height } = Dimensions.get('window');
 const refreshIcon = (<Icon name="autorenew" size={width/12} color="black" />);
@@ -36,6 +28,7 @@ const thumbup = (<Icon name="thumb-up" size={width/16} color="white" />);
 const downvoteIcon = (<Icon name="exposure-neg-1" size={width/16} color="white" />);
 const thumbdown = (<Icon name="thumb-down" size={width/16} color="white" />);
 const deleteIcon = (<Icon name="delete-forever" size={width/14} color="white" />);
+const reportIcon = (<Icon name="visibility" size={width/14} color="white" />);
 const closeIcon = (<Icon name="keyboard-arrow-left" size={width/16} color="white" />);
 const addImgIcon = (<Icon name="camera-alt" size={width/18} color="white" />);
 
@@ -96,7 +89,6 @@ class DisplayLatLng extends React.Component {
   showSelectedPic() {
       if (this.state.selectedPic === '') return <View />
       return (
-          <CardImage>
 	          <TouchableHighlight underlayColor='transparent' onPress={()=>{this.setState({modalPic: this.state.selectedPic})}}>
               <Image
                style={{
@@ -106,7 +98,6 @@ class DisplayLatLng extends React.Component {
                }}
                source={{ uri: this.state.selectedPic }} />
                </TouchableHighlight>
-        </CardImage>
         )
   }
 
@@ -364,9 +355,9 @@ class DisplayLatLng extends React.Component {
   bottombar() {
       return (
         <View style={{backgroundColor: '#3F51B5', height: height * 0.05,
-            left: width * 0.055,
+            left: width * 0.045,
             top: height * 0.445,
-            width: width * 0.88,
+            width: width * 0.9,
       position: 'absolute',
     shadowColor: "#000000",
     shadowOpacity: 0.8,
@@ -433,9 +424,12 @@ class DisplayLatLng extends React.Component {
                   </TouchableHighlight>
            <Text style={{backgroundColor:'transparent', color:"white", fontSize: width * 0.04, padding: width*0.01}}>200</Text>
          </View>
-	       <TouchableHighlight onPress={()=>{this.notice('upvote pressed'); console.log('pressed')}}>
+	     <TouchableHighlight onPress={()=>{this.notice('upvote pressed'); console.log('pressed')}}>
            {deleteIcon}
-                  </TouchableHighlight>
+         </TouchableHighlight>
+	     <TouchableHighlight onPress={()=>{this.notice('upvote pressed'); console.log('pressed')}}>
+           {reportIcon}
+         </TouchableHighlight>
          <View flexDirection='row'>
             <Text style={{backgroundColor:'transparent', padding: width*0.01, color:"white"}}>-200</Text>
 	             <TouchableHighlight onPress={()=>{this.notice('upvote pressed'); console.log('pressed')}}>
@@ -760,7 +754,7 @@ const styles = StyleSheet.create({
     },
     dropdown_2_dropdown: {
         width: width * 0.6,
-        height: height * 0.21,
+        height: height * 0.16,
         backgroundColor: '#424242',
         borderColor: 'grey',
         borderRadius: width * 0.01,
@@ -773,7 +767,7 @@ const styles = StyleSheet.create({
     },
     dropdown_2_row: {
         flexDirection: 'row',
-        height: 40,
+        height: height* 0.05,
         alignItems: 'center',
     },
     dropdown_2_image: {
