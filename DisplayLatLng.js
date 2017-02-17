@@ -1,5 +1,6 @@
 import React from 'react';
 import {
+  Alert,
   StyleSheet,
   View,
   Text,
@@ -13,6 +14,7 @@ import {
 } from 'react-native';
 
 import ImagePicker from 'react-native-image-picker';
+import DeviceInfo from 'react-native-device-info';
 
 import Gallery from 'react-native-gallery';
 import MapView from 'react-native-maps';
@@ -424,7 +426,12 @@ class DisplayLatLng extends React.Component {
                   </TouchableHighlight>
            <Text style={{backgroundColor:'transparent', color:"white", fontSize: width * 0.04, padding: width*0.01}}>200</Text>
          </View>
-	     <TouchableHighlight onPress={()=>{this.notice('upvote pressed'); console.log('pressed')}}>
+	     <TouchableHighlight onPress={()=>{
+             Alert.alert('',
+                 '确定删除该条留言？',
+                 [{text: '取消', onPress: () => console.log('Cancel Pressed'), style: 'cancel'},
+                  {text: '确定', onPress: () => console.log('OK Pressed')}],
+                 {cancelable: false })}}>
            {deleteIcon}
          </TouchableHighlight>
 	     <TouchableHighlight onPress={()=>{this.notice('upvote pressed'); console.log('pressed')}}>
@@ -440,8 +447,32 @@ class DisplayLatLng extends React.Component {
       );
   }
 
+  renderMainButtons() {
+     if (this.state.postOpen) return <View />;
+     if (this.state.openForm) return <View />;
+     return (
+  	<View >
+  	<TouchableHighlight style={styles.refreshButton}
+  	 underlayColor='lightgrey' onPress={()=>{this.setState({loading: !this.state.loading});console.log('pressed')}}>
+  	  {refreshIcon}
+  	</TouchableHighlight >
+  	<TouchableHighlight style={styles.addButton}
+  	 underlayColor='#ff7043' onPress={()=>{
+               this.setState({openForm: !this.state.openForm});
+               }} >
+  	  {addIcon}
+  	</TouchableHighlight>
+  	<TouchableHighlight style={styles.personButton}
+  	 underlayColor='lightgrey' onPress={()=>{this.setState({loading: !this.state.loading});console.log('pressed')}}>
+  	  {person}
+  	</TouchableHighlight >
+      </View>
+      );
+  }
+
   render() {
       console.log('render:');
+      console.log("Device Unique ID", DeviceInfo.getUniqueID());
     return (
       <View style={styles.container}>
         <MapView
@@ -484,22 +515,7 @@ class DisplayLatLng extends React.Component {
                 </MapView.Callout>
 	    </MapView.Marker>
 	</MapView>
-	<View >
-	<TouchableHighlight style={styles.refreshButton}
-	 underlayColor='lightgrey' onPress={()=>{this.setState({loading: !this.state.loading});console.log('pressed')}}>
-	  {refreshIcon}
-	</TouchableHighlight >
-	<TouchableHighlight style={styles.addButton}
-	 underlayColor='#ff7043' onPress={()=>{
-             this.setState({openForm: !this.state.openForm});
-             }} >
-	  {addIcon}
-	</TouchableHighlight>
-	<TouchableHighlight style={styles.personButton}
-	 underlayColor='lightgrey' onPress={()=>{this.setState({loading: !this.state.loading});console.log('pressed')}}>
-	  {person}
-	</TouchableHighlight >
-        </View>
+    {this.renderMainButtons()}
         { this.renderCard() }
         { this.showNotice() }
         { this.showForm() }
@@ -508,6 +524,7 @@ class DisplayLatLng extends React.Component {
     );
   }
 }
+
 
 DisplayLatLng.propTypes = {
   provider: MapView.ProviderPropType,
